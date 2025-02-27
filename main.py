@@ -83,7 +83,7 @@ class MyClient(discord.Client):
                 for hismsg in msghistory[::-1]:
                     print(f"{Fore.GREEN if hismsg.author.id == client.user.id else Fore.RED}{str(hismsg.author).replace('#0', '')}:{Style.RESET_ALL} {hismsg.content.replace(f'<@{str(client.user.id)}>', f'{Fore.LIGHTYELLOW_EX}@{client.user.name}{Style.RESET_ALL}')}")
 
-                print(f"{Fore.CYAN}[CLICORD] You are now chatting. Type and press [ENTER] to send a message!{Style.RESET_ALL}")
+                print(f"{Fore.CYAN}[CLICORD] You are now chatting. Type and press [ENTER] to send a message! Type '/c' to exit the chat.{Style.RESET_ALL}")
 
                 while True:
                     msgToSend = await ainput(f"{Fore.YELLOW}")
