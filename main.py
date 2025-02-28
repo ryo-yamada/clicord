@@ -15,7 +15,7 @@ except:
     os.system('pip install aioconsole')
     sleep(0.5)
     import discord
-    from aionconsole import ainput
+    from aioconsole import ainput
 
 import logging
 from sys import stdin
