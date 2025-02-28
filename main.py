@@ -18,8 +18,7 @@ except:
     from aioconsole import ainput
 
 import logging
-from sys import stdin
-
+import json
 from colorama import Fore, Style, just_fix_windows_console
 just_fix_windows_console()
 def cls():
@@ -28,25 +27,75 @@ async def retinp():
     await ainput(f"\n{Fore.LIGHTBLACK_EX}Press [ENTER] to return.{Style.RESET_ALL}")
 os.system('title CLICORD')
 logging.disable(logging.CRITICAL)
-cls()
 joinedChannel = None
 msgToSend = None
 tokenToRun = None
+accalias = None
 
-with open('savedtoken.txt','r') as readfile:
-    content = readfile.read()
-    if content == '':
-        tokenToRun = input(f"{Fore.LIGHTMAGENTA_EX}ACCOUNT TOKEN: {Fore.GREEN}")
-        tokenSaveDilemma = input(f"{Style.RESET_ALL}Would you like to save this token so you don't need to log in manually again next time? ([y] to agree, [ENTER] to decline): ")
-        if tokenSaveDilemma == 'y':
-            with open('savedtoken.txt','w') as writefile:
-                writefile.write(tokenToRun)
-    else:
-        continueConfirmation = input(f"Would you like to continue with your saved account? ([y] to agree, [ENTER] to decline): ")
-        if continueConfirmation == 'y':
-            tokenToRun = content
-        else:
+# the questionably written account manager
+with open('tokenlist.json','r', encoding='utf-8') as readfile:
+    data = json.load(readfile)
+    while True:
+        cls()
+        if data == []:
             tokenToRun = input(f"{Fore.LIGHTMAGENTA_EX}ACCOUNT TOKEN: {Fore.GREEN}")
+            tokenSaveDilemma = input(f"{Style.RESET_ALL}Would you like to save this token so you don't need to log in manually again next time? ([y] to agree, [ENTER] to decline): ")
+            if tokenSaveDilemma == 'y':
+                accalias = input(f"{Fore.LIGHTRED_EX}ACCOUNT ALIAS: {Style.RESET_ALL}")
+                for account in data:
+                    if accalias == account["alias"]:
+                        print(f"{Fore.RED}You already have an account with this alias! To prevent weird behavior, please choose a different alias.\n{Style.RESET_ALL}")
+                        input(f"{Fore.LIGHTBLACK_EX}Press [ENTER] to return{Style.RESET_ALL}")
+                        continue
+                dataToSave = {'alias': accalias, 'token':tokenToRun}
+                data.append(dataToSave)
+                with open('tokenlist.json','w') as writefile:
+                    json.dump(data, writefile)
+            else:
+                break
+        else:
+            print(f"""{Fore.LIGHTBLUE_EX}CLICORD ACCOUNT MANAGER{Style.RESET_ALL}
+[1] Log in with a saved account
+[2] Add account to account manager
+[3] Log in with disposable mode
+[4] Remove a saved account
+""")
+            accmangmainselection = input(f"{Fore.LIGHTBLACK_EX}SELECTION: {Fore.YELLOW}")
+            if accmangmainselection == '1':
+                cls()
+                for account in data:
+                    print(f"- {account["alias"]}")
+                accToRun = input(f"{Fore.LIGHTBLACK_EX}SELECTION: {Style.RESET_ALL}")
+                breakDbnc = False
+                for account in data:
+                    if accToRun == account["alias"]:
+                        tokenToRun = account["token"]
+                        breakDbnc = True
+                if breakDbnc:
+                    break
+            elif accmangmainselection == '2':
+                tokenToRun = input(f"{Fore.LIGHTMAGENTA_EX}ACCOUNT TOKEN: {Fore.GREEN}")
+                accalias = input(f"{Fore.LIGHTRED_EX}ACCOUNT ALIAS: {Style.RESET_ALL}")
+                for account in data:
+                    if accalias == account["alias"]:
+                        print(f"{Fore.RED}You already have an account with this alias! To prevent weird behavior, please choose a different alias.\n{Style.RESET_ALL}")
+                        input(f"{Fore.LIGHTBLACK_EX}Press [ENTER] to return{Style.RESET_ALL}")
+                        continue
+                dataToSave = {'alias': accalias, 'token':tokenToRun}
+                data.append(dataToSave)
+                with open('tokenlist.json','w') as writefile:
+                    json.dump(data, writefile)
+            elif accmangmainselection == '3':
+                tokenToRun = input(f"{Fore.LIGHTMAGENTA_EX}ACCOUNT TOKEN: {Fore.GREEN}")
+                break
+            elif accmangmainselection == '4':
+                cls()
+                for account in data:
+                    print(f"- {account["alias"]}")
+                accToEdit = input(f"{Fore.LIGHTBLACK_EX}SELECTION: {Style.RESET_ALL}")
+                data = [acc for acc in data if acc["alias"] != accalias]
+                with open('tokenlist.json','w') as writefile:
+                    json.dump(data, writefile)
 
 cls()
 print("Please wait...")
@@ -65,7 +114,6 @@ class MyClient(discord.Client):
 [5] View Channels In Server
 """)
             mainselection = await ainput(f"{Fore.LIGHTBLACK_EX}SELECTION: {Fore.YELLOW}")
-            print(mainselection)
             
             if mainselection == '1':
                 cls()
@@ -87,7 +135,6 @@ class MyClient(discord.Client):
 
                 while True:
                     msgToSend = await ainput(f"{Fore.YELLOW}")
-                    stdin.flush()
                     if msgToSend == '/c':
                         joinedChannel = None
                         break
