@@ -25,7 +25,8 @@ def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 async def retinp():
     await ainput(f"\n{Fore.LIGHTBLACK_EX}Press [ENTER] to return.{Style.RESET_ALL}")
-os.system('title CLICORD')
+if os.name == 'nt':
+    os.system('title CLICORD')
 logging.disable(logging.CRITICAL)
 joinedChannel = None
 msgToSend = None
