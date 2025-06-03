@@ -1,3 +1,7 @@
+## Note
+I'll be rewriting clicord because the code I wrote months ago is unreadable now... this repo will not be receiving anymore updates.
+clicord itself on this repo is still usable, it's just annoying for me to update now so use it if you want to.
+
 # clicord
 A CLI (command-line-interface) client that allows you to communicate with people on Discord through a console.
 
